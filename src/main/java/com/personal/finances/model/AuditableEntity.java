@@ -24,7 +24,6 @@ public abstract class AuditableEntity {
     @PrePersist
     public void prePersist() {
         this.createdAt = new Date();
-        this.updatedAt = new Date();
         this.createdBy = SecurityContextHolder.getContext().getAuthentication().getName();
     }
 

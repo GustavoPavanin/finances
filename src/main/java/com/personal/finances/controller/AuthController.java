@@ -29,7 +29,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if (userRepository.findByUserName(user.getUserName()).isPresent()) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Nome de usuário já existe.");
         }
 
@@ -41,14 +41,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User loginRequest) {
-        User user = userRepository.findByUserName(loginRequest.getUserName())
+        User user = userRepository.findByUsername(loginRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             return ResponseEntity.badRequest().body("Credenciais invalidas.");
         }
 
-        String token = jwtUtil.generateToken(user.getUserName());
+        String token = jwtUtil.generateToken(user.getUsername());
 
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
