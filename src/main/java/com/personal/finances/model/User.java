@@ -7,12 +7,13 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "users")
+@Table(name = User.TABLE_USERS)
 public class User {
+    public static final String TABLE_USERS = "users";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String userName;
+    private String username;
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;
