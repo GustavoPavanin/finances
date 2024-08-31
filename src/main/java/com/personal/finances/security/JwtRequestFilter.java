@@ -15,6 +15,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.personal.finances.util.Utils.isNotNull;
+import static com.personal.finances.util.Utils.isNull;
+
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -31,7 +34,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        if (isNotNull(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(jwt);
@@ -39,7 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 logger.warn("JWT Token is invalid: " + e.getMessage());
             }
         }
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (isNotNull(username) && isNull(SecurityContextHolder.getContext().getAuthentication())) {
             UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
             if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
